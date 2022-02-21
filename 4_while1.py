@@ -11,11 +11,15 @@
 
 
 def hello_user():
-    """
-    Замените pass на ваш код
-    """
-    pass
+    greeting = input('Как дела? ')
+    while greeting != 'хорошо':
+        greeting = input('Как дела? ')
+      
 
     
 if __name__ == "__main__":
     hello_user()
+
+def summa(a, b):
+    print(f'Ой ща как сложим {a} и {b}')
+    return (a + b)

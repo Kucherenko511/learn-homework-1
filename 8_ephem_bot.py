@@ -12,46 +12,66 @@
   бота отвечать, в каком созвездии сегодня находится планета.
 
 """
+from datetime import datetime
+import ephem
 import logging
-
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
 
-logging.basicConfig(format='%(name)s - %(levelname)s - %(message)s',
-                    level=logging.INFO,
-                    filename='bot.log')
+logging.basicConfig(filename='bot.log', level=logging.INFO)
 
 
-PROXY = {
-    'proxy_url': 'socks5://t1.learn.python.ru:1080',
-    'urllib3_proxy_kwargs': {
-        'username': 'learn',
-        'password': 'python'
-    }
-}
+def user_greeting(update, context):
+    print('/start был вызван')
+    update.message.reply_text("Привет, ты нажал кнопку")
 
 
-def greet_user(update, context):
-    text = 'Вызван /start'
-    print(text)
-    update.message.reply_text(text)
+def planet_info(update, context):
+    input_planet = update.message.text.split(' ')[1]
+    if input_planet == "Mercury":
+        planet = ephem.Mercury(datetime.today())
+        update.message.reply_text(ephem.constellation(planet))
+    elif input_planet == "Venus":
+        planet = ephem.Venus(datetime.today())
+        update.message.reply_text(ephem.constellation(planet))
+    elif input_planet == "Earth":
+        planet = ephem.Earth(datetime.today())
+        update.message.reply_text(ephem.constellation(planet))
+    elif input_planet == "Mars ":
+        planet = ephem.Mars(datetime.today())
+        update.message.reply_text(ephem.constellation(planet))
+    elif input_planet == "Jupiter":
+        planet = ephem.Jupiter(datetime.today())
+        update.message.reply_text(ephem.constellation(planet))
+    elif input_planet == "Saturn":
+        planet = ephem.Saturn(datetime.today())
+        update.message.reply_text(ephem.constellation(planet))
+    elif input_planet == "Uranus":
+        planet = ephem.Uranus(datetime.today())
+        update.message.reply_text(ephem.constellation(planet))
+    elif input_planet == "Neptune":
+        planet = ephem.Neptune(datetime.today())
+        update.message.reply_text(ephem.constellation(planet))
+    else:
+        update.message.reply_text("Такой планеты нет")
 
 
-def talk_to_me(update, context):
-    user_text = update.message.text
-    print(user_text)
+def echo_talking(update, context):
+    text = update.message.text
     update.message.reply_text(text)
 
 
 def main():
-    mybot = Updater("КЛЮЧ, КОТОРЫЙ НАМ ВЫДАЛ BotFather", request_kwargs=PROXY, use_context=True)
-
+    mybot = Updater(settings.API_KEY)
     dp = mybot.dispatcher
-    dp.add_handler(CommandHandler("start", greet_user))
-    dp.add_handler(MessageHandler(Filters.text, talk_to_me))
+    dp.add_handler(CommandHandler("start", user_greeting))
+    dp.add_handler(CommandHandler("planet", planet_info))
+    dp.add_handler(MessageHandler(Filters.text, echo_talking))
+
+    logging.info('бот стартовал')
 
     mybot.start_polling()
     mybot.idle()
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     main()
